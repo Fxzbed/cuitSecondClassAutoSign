@@ -2,7 +2,6 @@ package com.sc.backend.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +23,6 @@ public class HttpRequestUtil {
                 .post(body)
                 .build();
         try {
-            Map<String, String> map = new HashMap<String, String>();
-            ObjectMapper objectMapper = new ObjectMapper();
             System.out.println(Parmas);
             Response response = client.newCall(request).execute();
 
@@ -53,9 +50,6 @@ public class HttpRequestUtil {
                 .header("Authorization", "Bearer " + access_token)
                 .build();
         try {
-            Map<String, String> map = new HashMap<String, String>();
-            ObjectMapper objectMapper = new ObjectMapper();
-
             Response response = client.newCall(request).execute();
 
             if (response.body() != null) {
@@ -78,8 +72,6 @@ public class HttpRequestUtil {
                 .build();
         try {
             Map<String, String> map = new HashMap<String, String>();
-            ObjectMapper objectMapper = new ObjectMapper();
-
             Response response = client.newCall(request).execute();
 
             if (response.body() != null) {
@@ -126,8 +118,6 @@ public class HttpRequestUtil {
                 .post(body)
                 .build();
         try {
-            Map<String, String> map = new HashMap<String, String>();
-            ObjectMapper objectMapper = new ObjectMapper();
             Response response = client.newCall(request).execute();
 
             if (response.body() != null) {
@@ -156,9 +146,6 @@ public class HttpRequestUtil {
                 .header("Authorization", "Bearer " + access_token)
                 .build();
         try {
-            Map<String, String> map = new HashMap<String, String>();
-            ObjectMapper objectMapper = new ObjectMapper();
-
             Response response = client.newCall(request).execute();
 
             if (response.body() != null) {
@@ -166,10 +153,33 @@ public class HttpRequestUtil {
                 JSONObject jsonObject = JSON.parseObject(res);
                 int errcode = jsonObject.getIntValue("errcode");
                 if (errcode == 0) {
-                    return true;
+                    return SignQT(access_token, activity_id);
                 }
             }
+            return false;
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean SignQT(String access_token, String activity_id) {
+        String url = "https://ywtb.cuit.edu.cn/third_api/cxek/PhoneApi/api/Activity/StuSaveQrCode?content=" +
+                activity_id +
+                "|1799999999|QT";
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + access_token)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+
+            if (response.body() != null) {
+                String res = response.body().string();
+                JSONObject jsonObject = JSON.parseObject(res);
+                int errcode = jsonObject.getIntValue("errcode");
+                return errcode == 0;
+            }
             return false;
 
         } catch (IOException e) {

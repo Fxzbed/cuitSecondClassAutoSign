@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sc.backend.mapper.SignMapper;
+import com.sc.backend.mapper.SignhashMapper;
 import com.sc.backend.pojo.Sign;
+import com.sc.backend.pojo.Signhash;
 import com.sc.backend.pojo.User;
 import com.sc.backend.service.cuit.AddActivitySignService;
 import com.sc.backend.service.impl.utils.UserDetailsImpl;
@@ -26,6 +28,9 @@ public class AddActivitySignImpl implements AddActivitySignService {
 
     @Autowired
     private SignMapper signMapper;
+
+    @Autowired
+    private SignhashMapper signhashMapper;
 
     @Autowired
     private HttpRequestUtil httpRequestUtil;
@@ -68,12 +73,24 @@ public class AddActivitySignImpl implements AddActivitySignService {
             if (Objects.equals(signMsg.get("SignWayText"), "扫码签到")) {
                 String res = httpRequestUtil.SaveActivityApply(access_token, user.getScUsername(), activity_id, formatTransUtil.UrlEncode(timeStampUtil.getCurrentTime()));
                 JSONObject json = JSON.parseObject(res);
-                int errcode = json.getIntValue("errcode");
-                if (errcode == 0) {
-                    Sign sign = new Sign(password, activity_id, signMsg.get("ActivityQDBeginDate"), user.getId(), "等待签到中", signMsg.get("ActivityQDEndDate"), signMsg.get("ActivityName"));
-                    signMapper.insert(sign);
-                } else {
-                    map.put("error_message", "fail");
+                String ActivityQDBeginDate = json.getString("ActivityQDBeginDate");
+                String ActivityQDEndDate = json.getString("ActivityQDEndDate");
+
+                if (timeStampUtil.timeValidityChecker(ActivityQDBeginDate, ActivityQDEndDate)) {
+                    int errcode = json.getIntValue("errcode");
+                    if (errcode == 0) {
+                        Sign sign = new Sign(password, activity_id, signMsg.get("ActivityQDBeginDate"), user.getId(), "等待签到中", signMsg.get("ActivityQDEndDate"), signMsg.get("ActivityName"));
+                        QueryWrapper<Signhash> queryWrapper_ = new QueryWrapper<>();
+                        queryWrapper_.eq("activityid", activity_id);
+                        Signhash signhash = signhashMapper.selectOne(queryWrapper_);
+                        if (signhash == null) {
+                            signhash = new Signhash(activity_id, timeStampUtil.timeStampTrans(signMsg.get("ActivityQDBeginDate")), timeStampUtil.timeStampTrans(signMsg.get("ActivityQDEndDate")));
+                            signhashMapper.insert(signhash);
+                        }
+                        signMapper.insert(sign);
+                    } else {
+                        map.put("error_message", "fail");
+                    }
                 }
             } else {
                 map.put("error_message", "signTypeError");
