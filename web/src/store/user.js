@@ -113,10 +113,11 @@ export default {
             });
             localStorage.setItem("sc_username", resp.sc_username);
             localStorage.setItem("sc_password", resp.sc_password);
-            if (localStorage.getItem("password") === null) {
+            console.log(resp.sc_password)
+            if (localStorage.getItem("password") === null && resp.sc_username !== null) {
               context.commit("getScPassword");
             }
-            if (localStorage.getItem("access_token") === null) {
+            if (localStorage.getItem("access_token") === null && localStorage.getItem("password") !== null) {
               context.commit("getAccessToken");
             }
             data.success(resp);
@@ -229,6 +230,7 @@ export default {
       localStorage.removeItem("access_token");
       localStorage.removeItem("sc_username");
       localStorage.removeItem("sc_password");
+      localStorage.removeItem("activityItemList")
       context.commit("logout");
     }
   },

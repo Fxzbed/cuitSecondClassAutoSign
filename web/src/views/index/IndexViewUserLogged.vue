@@ -43,14 +43,21 @@
       </nav>
     </div>
     <ContextField>
-      <ContextCards></ContextCards>
+      <div v-if="isRender == true">
+        <ContextCards></ContextCards>
+      </div>
+      <div v-else>
+        <ul>
+          <li>请在账户设置中设置您的校园账号</li>
+        </ul>
+      </div>
     </ContextField>
   </body>
 </template>
 
 <script>
 import router from "@/router";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import $ from "jquery";
 import ContextField from "@/components/ContextField.vue";
@@ -62,6 +69,8 @@ export default {
     ContextCards,
   },
   setup() {
+    let isRender = ref(false);
+
     function fadeOut(url) {
       var element = document.getElementById("both");
       var opacity = 1;
@@ -107,11 +116,16 @@ export default {
       $("#account").click(() => {
         fadeOut("/account");
       });
+
+      if (localStorage.getItem("activityItemList") !== null) {
+        isRender.value = true;
+      }
     });
 
     return {
       logout,
       fadeOut,
+      isRender,
     };
   },
 };

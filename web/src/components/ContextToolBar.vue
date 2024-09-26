@@ -129,6 +129,51 @@ import store from "@/store";
 
 export default {
   setup() {
+    function getActivity(pageId) {
+      console.log(pageId);
+      $.ajax({
+        url: "http://localhost:3000/cuit/activity/list/",
+        type: "get",
+        async: false,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        data: {
+          access_token: localStorage.getItem("access_token"),
+          page_id: pageId,
+        },
+        success(resp) {
+          localStorage.setItem("activityJson" + pageId, resp);
+        },
+        error(resp) {
+          console.log(resp);
+        },
+      });
+    }
+
+    function readyForPage() {
+      let jsonList = {};
+      let jsonGroup = {};
+      let itemGroupId = 0;
+      let count = 0;
+      for (let i = 1; i < 3; i++) {
+        getActivity(i.toString());
+        let currentjson = eval(
+          "(" + localStorage.getItem("activityJson" + i.toString()) + ")"
+        );
+
+        for (let itemId = 0; itemId < 10; itemId++) {
+          jsonGroup[count++] = currentjson.List.Items[itemId];
+          if (count === 3) {
+            jsonList[itemGroupId++] = jsonGroup;
+            jsonGroup = {};
+            count = 0;
+          }
+        }
+      }
+      localStorage.setItem("activityItemList", JSON.stringify(jsonList));
+    }
+
     let user_photo_url = ref("");
     let sc_username = ref("");
     let sc_password = ref("");
@@ -170,6 +215,29 @@ export default {
           sc_username: sc_username.value,
           sc_password: sc_password.value,
           success() {
+            store.dispatch("getinfo", {
+              success() {
+                if (localStorage.getItem("access_token") !== null) {
+                  console.log(localStorage.getItem("access_token"));
+                  readyForPage();
+                  if (localStorage.getItem("activityItemList") != null) {
+                    fadeOut("/index");
+                  } else {
+                    console.log("debug: error");
+                  }
+                } else {
+                  fadeOut("/index");
+                }
+              },
+              error() {
+                localStorage.removeItem("token");
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("sc_username");
+                localStorage.removeItem("sc_password");
+                alert("未知的错误");
+                fadeOut("/login");
+              },
+            });
             alert("设置成功");
           },
           error() {

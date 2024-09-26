@@ -135,6 +135,10 @@ export default {
     let error_message = ref("");
 
     const login = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("sc_username");
+      localStorage.removeItem("sc_password");
       error_message.value = "";
       store.dispatch("login", {
         username: username.value,
@@ -142,16 +146,25 @@ export default {
         success() {
           store.dispatch("getinfo", {
             success() {
-              console.log(localStorage.getItem("access_token"));
-              readyForPage();
-              if (localStorage.getItem("activityItemList") != null) {
-                fadeOut("/index");
+              if (localStorage.getItem("access_token") !== null) {
+                console.log(localStorage.getItem("access_token"));
+                readyForPage();
+                if (localStorage.getItem("activityItemList") != null) {
+                  fadeOut("/index");
+                } else {
+                  console.log("debug: error");
+                }
               } else {
-                console.log("debug: error");
+                fadeOut("/index");
               }
             },
             error() {
-              console.log("error");
+              localStorage.removeItem("token");
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("sc_username");
+              localStorage.removeItem("sc_password");
+              alert("未知的错误");
+              fadeOut("/login");
             },
           });
         },

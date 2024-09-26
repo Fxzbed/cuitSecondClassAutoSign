@@ -69,6 +69,8 @@ import $ from "jquery";
 
 export default {
   setup() {
+    let activityItemList;
+
     function toggle(activityGroup, activityName) {
       let blur = document.getElementById("blur");
       blur.classList.toggle("active");
@@ -94,9 +96,13 @@ export default {
         },
         success(resp) {
           if (resp.error_message === "success") {
-            alert("已添加到您的签到队列");
+            alert("已为您报名并添加到您的签到队列");
           } else {
-            alert("添加失败，该活动可能已在队列中！");
+            if (resp.error_message === "signTypeError") {
+              alert("该活动不是扫码类型，无法添加到队列");
+            } else {
+              alert("添加失败，该活动可能已在队列中！");
+            }
           }
         },
         error() {
@@ -105,31 +111,60 @@ export default {
       });
     }
 
-    let activityItemList = ref(
-      eval("(" + localStorage.getItem("activityItemList") + ")")
-    );
-
-    // function getActivity(pageId) {
-    //   $.ajax({
-    //     url: "http://localhost:3000/cuit/activity/list/",
-    //     type: "get",
-    //     headers: {
-    //       Authorization: "Bearer " + localStorage.getItem("token"),
-    //     },
-    //     data: {
-    //       access_token: localStorage.getItem("access_token"),
-    //       page_id: pageId,
-    //     },
-    //     success(resp) {
-    //       localStorage.setItem("activityJson" + pageId, resp);
-    //     },
-    //     error(resp) {
-    //       console.log(resp);
-    //     },
-    //   });
-    // }
+    if (localStorage.getItem("activityItemList") !== null) {
+      activityItemList = ref(
+        eval("(" + localStorage.getItem("activityItemList") + ")")
+      );
+    }
 
     onMounted(() => {
+      function readyForPage() {
+        let jsonList = {};
+        let jsonGroup = {};
+        let itemGroupId = 0;
+        let count = 0;
+        for (let i = 1; i < 3; i++) {
+          getActivity(i.toString());
+          let currentjson = eval(
+            "(" + localStorage.getItem("activityJson" + i.toString()) + ")"
+          );
+
+          for (let itemId = 0; itemId < 10; itemId++) {
+            jsonGroup[count++] = currentjson.List.Items[itemId];
+            if (count === 3) {
+              jsonList[itemGroupId++] = jsonGroup;
+              jsonGroup = {};
+              count = 0;
+            }
+          }
+        }
+        localStorage.setItem("activityItemList", JSON.stringify(jsonList));
+      }
+
+      function getActivity(pageId) {
+        console.log(pageId);
+        $.ajax({
+          url: "http://localhost:3000/cuit/activity/list/",
+          type: "get",
+          async: false,
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          data: {
+            access_token: localStorage.getItem("access_token"),
+            page_id: pageId,
+          },
+          success(resp) {
+            localStorage.setItem("activityJson" + pageId, resp);
+          },
+          error(resp) {
+            console.log(resp);
+          },
+        });
+      }
+
+      readyForPage();
+
       $(function () {
         $(".dropdown").on("click", function (e) {
           $(".content-wrapper").addClass("overlay");
@@ -141,32 +176,8 @@ export default {
           }
         });
       });
-
-      // let jsonList = {};
-      // let jsonGroup = {};
-      // let itemGroupId = 0;
-      // let count = 0;
-      // for (let i = 1; i <= 3; i++) {
-      //   getActivity(i.toString());
-      //   let currentjson = eval(
-      //     "(" + localStorage.getItem("activityJson" + i.toString()) + ")"
-      //   );
-      //   // console.log(currentjson);
-
-      //   for (let itemId = 0; itemId < 10; itemId++) {
-      //     jsonGroup[count++] = currentjson.List.Items[itemId];
-      //     if (count === 3) {
-      //       jsonList[itemGroupId++] = jsonGroup;
-      //       jsonGroup = {};
-      //       count = 0;
-      //     }
-      //   }
-      // }
-      // console.log(jsonList);
-      localStorage.getItem("activityItemList");
     });
-    // console.log("------");
-    // console.log(activityItemList.value);
+
     console.log(activityItemList);
     return {
       activityItemList,
