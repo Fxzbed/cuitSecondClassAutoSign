@@ -11,7 +11,12 @@ import java.util.Map;
 
 @Component
 public class HttpRequestUtil {
+    private final TimeStampUtil timeStampUtil;
     private OkHttpClient client = new OkHttpClient();
+
+    public HttpRequestUtil(TimeStampUtil timeStampUtil) {
+        this.timeStampUtil = timeStampUtil;
+    }
 
     public String GetToken(String password) {
         String url = "https://ywtb.cuit.edu.cn/third_api/cxek/PhoneApi/api/Account/Login?code=123&state=GZState";
@@ -23,7 +28,6 @@ public class HttpRequestUtil {
                 .post(body)
                 .build();
         try {
-            System.out.println(Parmas);
             Response response = client.newCall(request).execute();
 
             if (response.body() != null) {
@@ -82,6 +86,9 @@ public class HttpRequestUtil {
                 map.put("ActivityQDEndDate", activityInfo.getString("ActivityQDEndDate"));
                 map.put("ActivityName", activityInfo.getString("ActivityName"));
                 map.put("SignWayText", activityInfo.getString("SignWayText"));
+                map.put("NextStepMsg", activityInfo.getString("NextStepMsg"));
+                JSONObject applyInfo = (JSONObject) jsonObject.get("ApplyInfo");
+                map.put("NoApplyReaon", applyInfo.getString("NoApplyReaon"));
             }
 
             return map;
@@ -122,9 +129,7 @@ public class HttpRequestUtil {
 
             if (response.body() != null) {
                 if (response.code() == 200) {
-                    String res = response.body().string();
-                    System.out.println(res);
-                    return res;
+                    return response.body().string();
                 } else {
                     return null;
                 }
@@ -140,7 +145,7 @@ public class HttpRequestUtil {
     public boolean SignQD(String access_token, String activity_id) {
         String url = "https://ywtb.cuit.edu.cn/third_api/cxek/PhoneApi/api/Activity/StuSaveQrCode?content=" +
                 activity_id +
-                "|1799999999|QD";
+                "|" + String.valueOf(timeStampUtil.getCurrentTimeStamp() / 1000) + "|QD";
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer " + access_token)
@@ -150,10 +155,12 @@ public class HttpRequestUtil {
 
             if (response.body() != null) {
                 String res = response.body().string();
+                System.out.println(res);
                 JSONObject jsonObject = JSON.parseObject(res);
                 int errcode = jsonObject.getIntValue("errcode");
                 if (errcode == 0) {
-                    return SignQT(access_token, activity_id);
+                    SignQT(access_token, activity_id);
+                    return true;
                 }
             }
             return false;
@@ -176,6 +183,7 @@ public class HttpRequestUtil {
 
             if (response.body() != null) {
                 String res = response.body().string();
+                System.out.println(res);
                 JSONObject jsonObject = JSON.parseObject(res);
                 int errcode = jsonObject.getIntValue("errcode");
                 return errcode == 0;

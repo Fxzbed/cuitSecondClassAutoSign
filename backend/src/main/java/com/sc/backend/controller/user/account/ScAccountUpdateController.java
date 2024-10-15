@@ -15,7 +15,7 @@ public class ScAccountUpdateController {
     @Autowired
     ScAccountUpdateService scAccountUpdateService;
 
-    @PostMapping("/user/account/scupdate/")
+    @PostMapping("/api/user/account/scupdate/")
     public Map<String, String> ScAccountUpdate(@RequestParam Map<String, String> params) {
         String sc_username = params.get("sc_username");
         String sc_password = params.get("sc_password");

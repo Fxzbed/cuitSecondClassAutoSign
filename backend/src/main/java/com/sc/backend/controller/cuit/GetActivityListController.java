@@ -17,7 +17,7 @@ public class GetActivityListController {
     @Autowired
     GetActivityListService getActivityListService;
 
-    @GetMapping("/cuit/activity/list/")
+    @GetMapping("/api/cuit/activity/list/")
     public String getActivityList(@RequestParam Map<String, String> params) {
         String access_token = params.get("access_token");
         String pageId = params.get("page_id");

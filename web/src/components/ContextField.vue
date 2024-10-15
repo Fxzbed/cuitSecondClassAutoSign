@@ -15,10 +15,9 @@
     <div class="app">
       <div class="header">
         <div class="header-menu">
-          <a class="menu-link is-active" href="#">活动列表</a>
-          <!-- <a class="menu-link notify" href="#">Your work</a>
-          <a class="menu-link" href="#">Discover</a>
-          <a class="menu-link notify" href="#">Market</a> -->
+          <a v-if="routePath === '/index'" class="menu-link is-active" href="#"
+            >活动列表</a
+          >
         </div>
       </div>
       <div class="wrapper">
@@ -42,9 +41,13 @@
 <script>
 import { onMounted } from "vue";
 import $ from "jquery";
+import { useRoute } from "vue-router";
 
 export default {
   setup() {
+    const route = useRoute();
+    let routePath = route.path;
+
     onMounted(() => {
       $(function () {
         $(".menu-link").click(function () {
@@ -120,6 +123,9 @@ export default {
         document.body.classList.toggle("light-mode");
       });
     });
+    return {
+      routePath,
+    };
   },
 };
 </script>

@@ -132,7 +132,7 @@ export default {
     function getActivity(pageId) {
       console.log(pageId);
       $.ajax({
-        url: "http://localhost:3000/cuit/activity/list/",
+        url: "/api/cuit/activity/list/",
         type: "get",
         async: false,
         headers: {

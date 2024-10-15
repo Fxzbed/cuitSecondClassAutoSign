@@ -48,7 +48,7 @@ export default {
     getActivity(pageId) {
       console.log(pageId);
       $.ajax({
-        url: "http://localhost:3000/cuit/activity/list/",
+        url: "/api/cuit/activity/list/",
         type: "get",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -76,7 +76,7 @@ export default {
   actions: {
     login(context, data) {
       $.ajax({
-        url: "http://localhost:3000/user/account/token/",
+        url: "/api/user/account/token/",
         type: "post",
         data: {
           username: data.username,
@@ -99,7 +99,7 @@ export default {
     },
     getinfo(context, data) {
       $.ajax({
-        url: "http://localhost:3000/user/account/getinfo/",
+        url: "/api/user/account/getinfo/",
         async: false,
         type: "get",
         headers: {
@@ -133,7 +133,7 @@ export default {
     },
     register(context, data) {
       $.ajax({
-        url: "http://localhost:3000/user/account/register/",
+        url: "/api/user/account/register/",
         type: "post",
         data: {
           username: data.username,
@@ -154,7 +154,7 @@ export default {
     },
     update_sc_account(context, data) {
       $.ajax({
-        url: "http://localhost:3000/user/account/scupdate/",
+        url: "/api/user/account/scupdate/",
         type: "post",
         headers: {
           Authorization: "Bearer " + context.state.token
@@ -177,7 +177,7 @@ export default {
     },
     update_user_photo(context, data) {
       $.ajax({
-        url: "http://localhost:3000/user/account/updatephoto/",
+        url: "/api/user/account/updatephoto/",
         type: "post",
         headers: {
           Authorization: "Bearer " + context.state.token
@@ -200,7 +200,7 @@ export default {
     },
     getScToken(context, data) {
       $.ajax({
-        url: "http://localhost:3000/cuit/token/",
+        url: "/api/cuit/token/",
         type: "get",
         async: false,
         headers: {
@@ -230,7 +230,8 @@ export default {
       localStorage.removeItem("access_token");
       localStorage.removeItem("sc_username");
       localStorage.removeItem("sc_password");
-      localStorage.removeItem("activityItemList")
+      localStorage.removeItem("activityItemList");
+      localStorage.removeItem("password");
       context.commit("logout");
     }
   },

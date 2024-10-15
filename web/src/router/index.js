@@ -3,6 +3,7 @@ import LoginView from '../views/user/LoginView.vue'
 import IndexView from '../views/index/IndexView.vue'
 import RegisterView from '../views/user/RegisterView.vue'
 import IndexViewUserLogged from '../views/index/IndexViewUserLogged.vue'
+import DataView from '@/views/data/DataView.vue'
 import AccountView from '@/views/user/AccountView.vue'
 import store from '../store/index'
 import TestView from '@/views/test/TestView.vue'
@@ -40,6 +41,14 @@ const routes = [
     path: "/account",
     name: "account_view",
     component: AccountView,
+    meta: {
+      requestAuth: true
+    }
+  },
+  {
+    path: "/data",
+    name: "data_view",
+    component: DataView,
     meta: {
       requestAuth: true
     }

@@ -87,7 +87,7 @@ export default {
     function getActivity(pageId) {
       console.log(pageId);
       $.ajax({
-        url: "http://localhost:3000/cuit/activity/list/",
+        url: "/api/cuit/activity/list/",
         type: "get",
         async: false,
         headers: {
@@ -111,7 +111,7 @@ export default {
       let jsonGroup = {};
       let itemGroupId = 0;
       let count = 0;
-      for (let i = 1; i < 3; i++) {
+      for (let i = 1; i < 10; i++) {
         getActivity(i.toString());
         let currentjson = eval(
           "(" + localStorage.getItem("activityJson" + i.toString()) + ")"
@@ -135,10 +135,10 @@ export default {
     let error_message = ref("");
 
     const login = () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("sc_username");
-      localStorage.removeItem("sc_password");
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        localStorage.removeItem(key);
+      }
       error_message.value = "";
       store.dispatch("login", {
         username: username.value,

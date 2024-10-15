@@ -5,7 +5,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://ywtb.cuit.edu.cn',
+        target: 'http://localhost:3000/api',
         changeOrigin: true, // 是否改变源地址
         pathRewrite: {
           '^/api': '' // 重写路径
@@ -13,6 +13,5 @@ module.exports = defineConfig({
       }
     }
   }
-    
 })
 

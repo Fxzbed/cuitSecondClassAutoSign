@@ -58,6 +58,13 @@
         >
           添加到签到队列
         </button>
+        <button
+          type="button"
+          class="content-button"
+          @click="toggle(itemGroupIndex, itemId)"
+        >
+          返回活动列表
+        </button>
       </div>
     </div>
   </div>
@@ -85,7 +92,7 @@ export default {
       popup.classList.toggle("active");
 
       $.ajax({
-        url: "http://localhost:3000/cuit/sign/add/",
+        url: "/api/cuit/sign/add/",
         type: "post",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -97,11 +104,14 @@ export default {
         success(resp) {
           if (resp.error_message === "success") {
             alert("已为您报名并添加到您的签到队列");
+            window.location.reload();
           } else {
             if (resp.error_message === "signTypeError") {
               alert("该活动不是扫码类型，无法添加到队列");
-            } else {
+            } else if (resp.error_message === "fail") {
               alert("添加失败，该活动可能已在队列中！");
+            } else {
+              alert(resp.error_message);
             }
           }
         },
@@ -123,7 +133,7 @@ export default {
         let jsonGroup = {};
         let itemGroupId = 0;
         let count = 0;
-        for (let i = 1; i < 3; i++) {
+        for (let i = 1; i < 10; i++) {
           getActivity(i.toString());
           let currentjson = eval(
             "(" + localStorage.getItem("activityJson" + i.toString()) + ")"
@@ -144,7 +154,7 @@ export default {
       function getActivity(pageId) {
         console.log(pageId);
         $.ajax({
-          url: "http://localhost:3000/cuit/activity/list/",
+          url: "/api/cuit/activity/list/",
           type: "get",
           async: false,
           headers: {

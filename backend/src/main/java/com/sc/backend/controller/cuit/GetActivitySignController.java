@@ -15,7 +15,7 @@ public class GetActivitySignController {
     @Autowired
     GetActivitySignService getActivitySignService;
 
-    @GetMapping("/cuit/sign/list/")
+    @GetMapping("/api/cuit/sign/list/")
     public Map<String, String> GetActivitySignController() {
         return getActivitySignService.getActivitySign();
     }

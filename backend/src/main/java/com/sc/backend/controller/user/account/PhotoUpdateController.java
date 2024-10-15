@@ -15,7 +15,7 @@ public class PhotoUpdateController {
     @Autowired
     private PhotoUpdateService photoUpdateService;
 
-    @PostMapping("/user/account/updatephoto/")
+    @PostMapping("/api/user/account/updatephoto/")
     public Map<String, String> getPhotoUpdateService(@RequestParam Map<String, String> map) {
         String url = map.get("url");
         return photoUpdateService.updatePhoto(url);

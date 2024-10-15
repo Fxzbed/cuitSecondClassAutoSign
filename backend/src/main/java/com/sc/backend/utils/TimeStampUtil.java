@@ -14,14 +14,16 @@ public class TimeStampUtil {
         return System.currentTimeMillis();
     }
 
-    public Boolean timeValidityChecker(String begin, String end) {
+    public Boolean timeValidityChecker(String end) {
         long currentTimeStamp = getCurrentTimeStamp();
-        return (currentTimeStamp > timeStampTrans(begin)) && currentTimeStamp < timeStampTrans(end);
+        System.out.println(currentTimeStamp);
+        System.out.println(timeStampTrans(end));
+        return currentTimeStamp < timeStampTrans(end);
     }
 
     public long timeStampTrans(String timeStr) {
-        LocalDateTime parsedDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-        return parsedDateTime.toEpochSecond(ZoneOffset.UTC);
+        LocalDateTime parsedDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+        return parsedDateTime.toEpochSecond(ZoneOffset.UTC) * 1000;
     }
 
     public String getCurrentTime() {

@@ -25,7 +25,7 @@ public class AddActivitySignController {
     @Autowired
     private FormatTransUtil formatTransUtil;
 
-    @PostMapping("/cuit/sign/add/")
+    @PostMapping("/api/cuit/sign/add/")
     public Map<String, String> addActivitySign (@RequestParam Map<String, String> params) {
         String activity_id = params.get("activity_id");
         String password = params.get("password");

@@ -23,7 +23,7 @@ public class UpdateTokenController {
     @Autowired
     private UserMapper userMapper;
 
-    @GetMapping("/cuit/token/")
+    @GetMapping("/api/cuit/token/")
     public String updateToken(@RequestParam Map<String, String> params) {
         UsernamePasswordAuthenticationToken authentication
                 = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
