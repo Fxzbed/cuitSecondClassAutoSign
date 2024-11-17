@@ -22,7 +22,7 @@ const routes = [
   {
     path: "/",
     name: "index",
-    component: IndexView
+    component: IndexView,
   },
   {
     path: "/register",

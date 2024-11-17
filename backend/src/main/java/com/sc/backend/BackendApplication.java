@@ -1,6 +1,7 @@
 package com.sc.backend;
 
 import com.sc.backend.service.cuit.AutoSignService;
+import com.sc.backend.utils.TimeStampUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +17,8 @@ public class BackendApplication {
 
     @Autowired
     private AutoSignService autoSignService;
+    @Autowired
+    private TimeStampUtil timeStampUtil;
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);

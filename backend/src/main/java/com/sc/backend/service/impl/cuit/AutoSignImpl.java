@@ -2,6 +2,7 @@ package com.sc.backend.service.impl.cuit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.sc.backend.mapper.SignMapper;
 import com.sc.backend.mapper.SignhashMapper;
 import com.sc.backend.pojo.Sign;
@@ -31,11 +32,12 @@ public class AutoSignImpl implements AutoSignService {
 
     @Override
     public void taskPolling() {
+//        System.out.println(timeStampUtil.getCurrentTimeStamp());
         AtomicLong count = new AtomicLong();
         QueryWrapper<Signhash> queryWrapper = new QueryWrapper<>();
         queryWrapper.gt("endtime", timeStampUtil.getCurrentTimeStamp()).lt("begintime", timeStampUtil.getCurrentTimeStamp());
         signhashMapper.selectList(queryWrapper).forEach(s -> {
-            System.out.println("find one " + s.getActivityid());
+            System.out.println("signhash匹配：" + s.getActivityid());
             String activityid = s.getActivityid();
              QueryWrapper<Sign> queryWrapper_ = new QueryWrapper<>();
              queryWrapper_.eq("activityid", activityid).eq("activitystatus", "等待签到中").or()
@@ -48,12 +50,11 @@ public class AutoSignImpl implements AutoSignService {
                  if (httpRequestUtil.SignQD(access_token, activityid)) {
                      System.out.println("[debug]:" + "[" + activityid + "]" + "userId: " + s_.getId() + " sign success " + timeStampUtil.getCurrentTime());
                      s_.setActivitystatus("已签到");
-
                  } else {
                      System.out.println("[debug]:" + "[" + activityid + "]" + " sign fail " + timeStampUtil.getCurrentTime());
                      s_.setActivitystatus("签到失败");
                  }
-                 signMapper.updateById(s_);
+                 signMapper.update(s_, new UpdateWrapper<Sign>().eq("activityid", activityid).eq("id", s_.getId()));
              });
         });
 

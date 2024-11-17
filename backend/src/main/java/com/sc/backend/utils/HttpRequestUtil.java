@@ -194,4 +194,24 @@ public class HttpRequestUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public String GetStuDetail(String access_token, String sc_username) {
+        String url = "https://ywtb.cuit.edu.cn/third_api/cxek/PhoneApi/api/Graduation/GetStuDetail?" +
+                "studentId=" + sc_username
+                + "&yearValue=";
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + access_token)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.body() != null) {
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return "";
+    }
 }

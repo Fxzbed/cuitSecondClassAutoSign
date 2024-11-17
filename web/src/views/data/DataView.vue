@@ -15,6 +15,7 @@ import router from "@/router";
 import ContextField from "@/components/ContextField.vue";
 import EchartsData from "@/components/EchartsData.vue";
 
+
 export default {
   methods: {
     refpage(pagename) {

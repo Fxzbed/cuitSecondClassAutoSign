@@ -1,47 +1,6 @@
 <template>
+  <SideBar @clicked="refpage"></SideBar>
   <body id="both">
-    <div class="container">
-      <nav>
-        <div class="brand">
-          <img :src="$store.state.user.photo" alt="..." />
-          <p>
-            Good day,
-            <span>{{ $store.state.user.username }}</span>
-          </p>
-        </div>
-        <hr class="line" />
-        <ul class="list">
-          <li id="index">
-            <i class="fa-solid fa-home"></i>
-            <span>Dashboard</span>
-          </li>
-          <li class="active">
-            <!-- @click = fadeOut(url) -->
-            <i class="fa-solid fa-user"></i>
-            <span>Accounts</span>
-          </li>
-          <li>
-            <i class="fa-solid fa-box"></i>
-            <span>Orders</span>
-          </li>
-          <li>
-            <i class="fa-solid fa-chart-simple"></i>
-            <span>Charts</span>
-          </li>
-          <li>
-            <i class="fa-solid fa-phone"></i>
-            <span>Support</span>
-          </li>
-
-          <hr class="line" />
-
-          <li @click="logout">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Logout</span>
-          </li>
-        </ul>
-      </nav>
-    </div>
     <ContextField style="width: 1000px">
       <ContextToolBar></ContextToolBar>
     </ContextField>
@@ -49,29 +8,32 @@
 </template>
 
 <script>
+import SideBar from "@/components/SideBar.vue";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap";
 import router from "@/router";
-import { onMounted } from "vue";
-import { useStore } from "vuex";
-import $ from "jquery";
 import ContextField from "@/components/AccountField.vue";
 import ContextToolBar from "@/components/ContextToolBar.vue";
 
 export default {
+  methods: {
+    refpage(pagename) {
+      this.fadeOut(pagename);
+    },
+  },
   components: {
+    SideBar,
     ContextField,
     ContextToolBar,
   },
   setup() {
     function fadeOut(url) {
-      // console.log("debug:", url);
       var element = document.getElementById("both");
       var opacity = 1;
       var timer = setInterval(function () {
         if (opacity <= 0.1) {
           element.style.opacity = 0;
-          clearInterval(timer); // 当透明度达到1时停止定时器
+          clearInterval(timer);
           console.log("clear");
           router.push(url);
         } else {
@@ -81,45 +43,75 @@ export default {
       }, 25);
     }
 
-    const store = useStore();
-
-    const logout = () => {
-      store.dispatch("logout");
-      fadeOut("/");
-    };
-
-    console.log(store.state.user.photo);
-
-    onMounted(() => {
-      let element = document.getElementById("both");
-      console.log(element);
-      let opacity = 0;
-      let timer = setInterval(function () {
-        if (opacity >= 0.9) {
-          element.style.opacity = 1;
-          clearInterval(timer);
-        } else {
-          opacity += 0.1;
-          element.style.opacity = opacity;
-        }
-      }, 25);
-
-      $("li").click(function () {
-        $("li").removeClass("active");
-        $(this).addClass("active");
-      });
-
-      $("#index").click(() => {
-        fadeOut("/index");
-      });
-    });
-
     return {
-      logout,
       fadeOut,
     };
   },
 };
+
+// export default {
+//   components: {
+//     ContextField,
+//     ContextToolBar,
+//     SideBar
+//   },
+//   setup() {
+//     function fadeOut(url) {
+//       // console.log("debug:", url);
+//       var element = document.getElementById("both");
+//       var opacity = 1;
+//       var timer = setInterval(function () {
+//         if (opacity <= 0.1) {
+//           element.style.opacity = 0;
+//           clearInterval(timer); // 当透明度达到1时停止定时器
+//           console.log("clear");
+//           router.push(url);
+//         } else {
+//           opacity -= 0.1;
+//           element.style.opacity = opacity;
+//         }
+//       }, 25);
+//     }
+
+//     const store = useStore();
+
+//     const logout = () => {
+//       store.dispatch("logout");
+//       fadeOut("/");
+//     };
+
+//     console.log(store.state.user.photo);
+
+//     onMounted(() => {
+//       let element = document.getElementById("both");
+//       console.log(element);
+//       let opacity = 0;
+//       let timer = setInterval(function () {
+//         if (opacity >= 0.9) {
+//           element.style.opacity = 1;
+//           clearInterval(timer);
+//         } else {
+//           opacity += 0.1;
+//           element.style.opacity = opacity;
+//         }
+//       }, 25);
+
+//       $("li").click(function () {
+//         $("li").removeClass("active");
+//         $(this).addClass("active");
+//       });
+
+//       $("#index").click(() => {
+//         fadeOut("/index");
+//       });
+//     });
+
+//     return {
+//       logout,
+//       fadeOut,
+//     };
+//   },
+// };
 </script>
 
 <style scoped>

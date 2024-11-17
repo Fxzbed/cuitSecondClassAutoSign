@@ -2,6 +2,7 @@ package com.sc.backend.utils;
 
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -22,8 +23,14 @@ public class TimeStampUtil {
     }
 
     public long timeStampTrans(String timeStr) {
-        LocalDateTime parsedDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
-        return parsedDateTime.toEpochSecond(ZoneOffset.UTC) * 1000;
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            Date date = formatter.parse(timeStr);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public String getCurrentTime() {

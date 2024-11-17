@@ -12,5 +12,10 @@ import 'echarts';
 // Vue.prototype.productionTip = false
 
 // axios.defaults.withCredentials = true
+router.beforeEach((to, from, next) => {
+    window.document.title = "Fxzbed_CuitSign"
+    next();
+  })
+
 createApp(App)
     .component('ECharts', ECharts).use(store).use(router).mount('#app')

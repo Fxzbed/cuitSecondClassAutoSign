@@ -79,35 +79,27 @@ public class AddActivitySignImpl implements AddActivitySignService {
                 String res = httpRequestUtil.SaveActivityApply(access_token, user.getScUsername(), activity_id, formatTransUtil.UrlEncode(timeStampUtil.getCurrentTime()));
                 JSONObject json = JSON.parseObject(res);
                 String ActivityQDEndDate = signMsg.get("ActivityQDEndDate");
-                String Errmsg = signMsg.get("errmsg");
-                String Errcode = signMsg.get("errcode");
+                String Errmsg = json.getString("errmsg");
+                String Errcode = json.getString("errcode");
 
                 if (!Objects.equals(Errcode, "0")) {
                     map.put("error_message", Errmsg);
                     return map;
                 }
-
-                if (timeStampUtil.timeStampTrans(ActivityQDEndDate) > timeStampUtil.getCurrentTimeStamp()) {
+                if (timeStampUtil.timeStampTrans(ActivityQDEndDate) < timeStampUtil.getCurrentTimeStamp()) {
                     map.put("error_message", "fail");
                     return map;
                 }
 
-                if (true) {
-                    int errcode = json.getIntValue("errcode");
-                    if (errcode == 0) {
-                        Sign sign = new Sign(password, activity_id, signMsg.get("ActivityQDBeginDate"), user.getId(), "等待签到中", signMsg.get("ActivityQDEndDate"), signMsg.get("ActivityName"));
-                        QueryWrapper<Signhash> queryWrapper_ = new QueryWrapper<>();
-                        queryWrapper_.eq("activityid", activity_id);
-                        Signhash signhash = signhashMapper.selectOne(queryWrapper_);
-                        if (signhash == null) {
-                            signhash = new Signhash(activity_id, timeStampUtil.timeStampTrans(signMsg.get("ActivityQDBeginDate")), timeStampUtil.timeStampTrans(signMsg.get("ActivityQDEndDate")));
-                            signhashMapper.insert(signhash);
-                        }
-                        signMapper.insert(sign);
-                    } else {
-                        map.put("error_message", "fail");
-                    }
+                Sign sign = new Sign(password, activity_id, signMsg.get("ActivityQDBeginDate"), user.getId(), "等待签到中", signMsg.get("ActivityQDEndDate"), signMsg.get("ActivityName"));
+                QueryWrapper<Signhash> queryWrapper_ = new QueryWrapper<>();
+                queryWrapper_.eq("activityid", activity_id);
+                Signhash signhash = signhashMapper.selectOne(queryWrapper_);
+                if (signhash == null) {
+                    signhash = new Signhash(activity_id, timeStampUtil.timeStampTrans(signMsg.get("ActivityQDBeginDate")), timeStampUtil.timeStampTrans(signMsg.get("ActivityQDEndDate")));
+                    signhashMapper.insert(signhash);
                 }
+                signMapper.insert(sign);
             } else {
                 map.put("error_message", "signTypeError");
             }

@@ -198,6 +198,26 @@ export default {
         }
       })
     },
+    getScore(context, data) {
+      $.ajax({
+        url: "/api/user/account/getScore/",
+        type: "post",
+        async: false,
+        headers: {
+          Authorization: "Bearer " + context.state.token
+        },
+        data: {
+          access_token: data.access_token
+        },
+        success(resp) {
+          if (resp.error_message === "success") {
+            data.success(resp);
+          } else {
+            data.error();
+          }
+        }
+      })
+    },
     getScToken(context, data) {
       $.ajax({
         url: "/api/cuit/token/",
