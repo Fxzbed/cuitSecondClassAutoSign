@@ -1,4 +1,5 @@
 <template>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
   <div class="container">
     <nav>
       <div class="brand">
@@ -15,7 +16,8 @@
           id="index"
           :class="routePath === '/index' ? 'active' : 'notactive'"
         >
-          <i class="fa-solid fa-home"></i>
+          <img class="icon" src="../../src/assets/img/home.png" alt="">
+          <!-- <i class="fa-solid fa-home"></i> -->
           <span>主页</span>
         </li>
         <li
@@ -24,35 +26,40 @@
           :class="routePath === '/account' ? 'active' : 'notactive'"
         >
           <!-- @click = fadeOut(url) -->
-          <i class="fa-solid fa-user"></i>
+          <img class="icon" src="../../src/assets/img/account.png" alt="">
+          <!-- <i class="fa-solid fa-user"></i> -->
           <span>账户</span>
         </li>
         <li
           @click="handleClick('/order')"
           :class="routePath === '/order' ? 'active' : 'notactive'"
         >
-          <i class="fa-solid fa-box"></i>
+        <img class="icon" src="../../src/assets/img/task.png" alt="">
+          <!-- <i class="fa-solid fa-box"></i> -->
           <span>队列</span>
         </li>
         <li
           @click="handleClick('/data')"
           :class="routePath === '/data' ? 'active' : 'notactive'"
         >
-          <i class="fa-solid fa-chart-simple"></i>
+        <img class="icon" src="../../src/assets/img/data.png" alt="">
+          <!-- <i class="fa-solid fa-chart-simple"></i> -->
           <span>数据</span>
         </li>
         <li
           @click="handleClick('/support')"
           :class="routePath === '/support' ? 'active' : 'notactive'"
         >
-          <i class="fa-solid fa-phone"></i>
+        <img class="icon" src="../../src/assets/img/message.png" alt="">
+          <!-- <i class="fa-solid fa-phone"></i> -->
           <span>工单</span>
         </li>
 
         <hr class="line" />
 
         <li @click="logout">
-          <i class="fa-solid fa-right-from-bracket"></i>
+          <img class="icon" src="../../src/assets/img/logout.png" alt="">
+          <!-- <i class="fa-solid fa-right-from-bracket"></i> -->
           <span>登出</span>
         </li>
       </ul>
@@ -130,6 +137,13 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+.icon {
+  margin-top: 2px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+}
+ 
 .container {
   /* width: 100%;
   height: 100%; */

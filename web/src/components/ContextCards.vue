@@ -104,7 +104,7 @@ export default {
         success(resp) {
           if (resp.error_message === "success") {
             alert("已为您报名并添加到您的签到队列");
-            window.location.reload();
+            // window.location.reload();
           } else {
             if (resp.error_message === "signTypeError") {
               alert("该活动不是扫码类型，无法添加到队列");
@@ -133,7 +133,7 @@ export default {
         let jsonGroup = {};
         let itemGroupId = 0;
         let count = 0;
-        for (let i = 1; i < 10; i++) {
+        for (let i = 1; i < 5; i++) {
           getActivity(i.toString());
           let currentjson = eval(
             "(" + localStorage.getItem("activityJson" + i.toString()) + ")"
